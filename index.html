@@ -557,6 +557,8 @@
   <script>
     let typingInterval;
     let lastLetter = "";
+    // Base URL for the backend - update this value if your backend URL changes
+    const BACKEND_URL = "https://medical-bill-navigator-patient-backend.vercel.app";
 
     function showTyping() {
       const chat = document.getElementById("chat");
@@ -590,6 +592,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("Document loaded, initializing Medical Bill Navigator");
+      
       const chat = document.getElementById('chat');
       const input = document.getElementById('userInput');
       const fileInput = document.getElementById('fileInput');
@@ -598,6 +602,7 @@
       const downloadAppealBtn = document.getElementById('downloadAppealBtn');
       const helpUnderstandBtn = document.getElementById('helpUnderstandBtn');
       const stepByStepBtn = document.getElementById('stepByStepBtn');
+      const downloadChatBtn = document.getElementById('downloadChatBtn');
       
       // Mobile buttons
       const mobileDownloadAppealBtn = document.getElementById('mobileDownloadAppealBtn');
@@ -642,7 +647,9 @@
         stepByStepBtn.onclick = () => presetMessage("Use the step-by-step guide to help you");
       }
       
-      document.getElementById('downloadChatBtn').onclick = downloadChat;
+      if (downloadChatBtn) {
+        downloadChatBtn.onclick = downloadChat;
+      }
       
       // Mobile buttons functionality
       if (mobileDownloadAppealBtn) {
@@ -687,32 +694,47 @@
       }
 
       function downloadLetter() {
-        if (!lastLetter) return alert("No letter to download yet.");
+        if (!lastLetter) {
+          alert("No letter to download yet.");
+          return;
+        }
+        
+        console.log("Downloading letter...");
+        
         try {
-          fetch("https://medical-bill-navigator-patient-backend.vercel.app/api/download", {
+          fetch(`${BACKEND_URL}/api/download`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/octet-stream"
+            },
             body: JSON.stringify({ letterContent: lastLetter }),
           })
           .then(response => {
-            if (!response.ok) throw new Error("Failed to generate letter");
+            if (!response.ok) {
+              console.error("Server response:", response.status, response.statusText);
+              throw new Error(`Failed to generate letter: ${response.status} ${response.statusText}`);
+            }
             return response.blob();
           })
           .then(blob => {
+            console.log("Received blob:", blob);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
             a.download = "appeal-letter.docx";
+            document.body.appendChild(a); // Append to document to ensure compatibility
             a.click();
             window.URL.revokeObjectURL(url);
+            document.body.removeChild(a); // Clean up
           })
           .catch(err => {
-            alert("Something went wrong downloading the letter.");
-            console.error(err);
+            console.error("Error downloading letter:", err);
+            alert("Something went wrong downloading the letter: " + err.message);
           });
         } catch (err) {
-          alert("Something went wrong downloading the letter.");
-          console.error(err);
+          console.error("Error in download function:", err);
+          alert("Something went wrong processing your download request: " + err.message);
         }
       }
 
@@ -725,6 +747,8 @@
         const message = input.value.trim();
         if (!message) return;
 
+        console.log("Sending message:", message);
+        
         addMessage("You", message, "user");
         input.value = "";
         messageHistory.push({ role: "user", content: message });
@@ -732,15 +756,30 @@
         showTyping();
 
         try {
-          const response = await fetch("https://medical-bill-navigator-patient-backend.vercel.app/api/chat", {
+          console.log("Sending request to backend...");
+          
+          const response = await fetch(`${BACKEND_URL}/api/chat`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: messageHistory }),
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ 
+              messages: messageHistory 
+            }),
           });
 
-          if (!response.ok) throw new Error("Network response was not OK");
+          console.log("Response status:", response.status);
+          
+          if (!response.ok) {
+            console.error("Server response:", response.status, response.statusText);
+            throw new Error(`Network response was not OK: ${response.status} ${response.statusText}`);
+          }
 
           const data = await response.json();
+          console.log("Response data:", data);
+          
+          // Add a small delay for better UX
           await new Promise(resolve => setTimeout(resolve, 500));
           removeTyping();
           vibrateIfActive();
@@ -749,6 +788,7 @@
           addMessage("Navigator", data.reply, "bot");
 
           if (data.offerDownload) {
+            console.log("Download letter available");
             lastLetter = data.reply;
             const downloadBtn = document.getElementById('downloadLetterBtn');
             if (downloadBtn) {
@@ -756,8 +796,9 @@
             }
           }
         } catch (error) {
+          console.error("Error in sendMessage:", error);
           removeTyping();
-          addMessage("Error", error.message, "bot");
+          addMessage("Error", "Sorry, there was a problem connecting to the Navigator service. Please try again later. Error: " + error.message, "bot");
         }
 
         chat.scrollTop = chat.scrollHeight;
@@ -797,28 +838,4 @@
     });
 
     function downloadChat() {
-      const messages = document.querySelectorAll(".message");
-      let chatContent = "Medical Bill Navigator Chat\n\n";
-
-      messages.forEach((msg) => {
-        const text = msg.innerText || msg.textContent;
-        chatContent += text + "\n\n";
-      });
-
-      const blob = new Blob([chatContent], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "medical-bill-chat.txt";
-      link.click();
-      URL.revokeObjectURL(url);
-    }
-
-   function openSelectedResource() {
-  const select = document.getElementById('resourceSelect');
-  const url = select.value;
-  if (url) {
-    window.open(url, '_blank');
-    select.value = ""; // Reset select after opening
-  }
-}
+      console.log("Downloading chat...");
