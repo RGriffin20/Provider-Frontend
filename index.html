@@ -559,7 +559,7 @@
     let typingInterval;
     let lastLetter = "";
     // Base URL for the backend - update this value if your backend URL changes
-    const BACKEND_URL = "https://medical-bill-navigator-patient-backend.vercel.app";
+    const BACKEND_URL = "https://provider-backend.vercel.app/api/provider";
 
     function showTyping() {
       const chat = document.getElementById("chat");
@@ -756,29 +756,24 @@
 
         showTyping();
 
-        try {
-          console.log("Sending request to backend...");
-          
-          const response = await fetch(`${BACKEND_URL}/api/chat`, {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify({ 
-              messages: messageHistory 
-            }),
-          });
+try {
+  console.log("Sending request to backend...");
 
-          console.log("Response status:", response.status);
-          
-          if (!response.ok) {
-            console.error("Server response:", response.status, response.statusText);
-            throw new Error(`Network response was not OK: ${response.status} ${response.statusText}`);
-          }
+  const response = await fetch(`${BACKEND_URL}/chat`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({ messages: messageHistory }),
+  });
 
-          const data = await response.json();
-          console.log("Response data:", data);
+  if (!response.ok) {
+    throw new Error(`Network response was not OK: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log("✅ Response data:", data);
           
           // Add a small delay for better UX
           await new Promise(resolve => setTimeout(resolve, 500));
