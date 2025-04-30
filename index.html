@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -839,3 +840,61 @@
 
     function downloadChat() {
       console.log("Downloading chat...");
+      const messages = document.querySelectorAll(".message");
+      let chatContent = "Medical Bill Navigator Chat\n\n";
+
+      messages.forEach((msg) => {
+        const text = msg.innerText || msg.textContent;
+        chatContent += text + "\n\n";
+      });
+
+      try {
+        const blob = new Blob([chatContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "medical-bill-chat.txt";
+        document.body.appendChild(link); // Append to document to ensure compatibility
+        link.click();
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link); // Clean up
+        console.log("Chat download complete");
+      } catch (error) {
+        console.error("Error downloading chat:", error);
+        alert("Could not download chat: " + error.message);
+      }
+    }
+    
+    function openSelectedResource() {
+      const select = document.getElementById('resourceSelect');
+      const url = select.value;
+      if (url) {
+        window.open(url, '_blank');
+        select.value = ""; // Reset select after opening
+      }
+    }
+
+    // Handle errors from Chrome extensions by adding a global error handler
+    window.addEventListener('error', function(event) {
+      // Only log errors that aren't related to Chrome extensions
+      if (!event.message.includes('chrome-extension') && 
+          !event.message.includes('Could not establish connection')) {
+        console.error('Caught error:', event.message);
+      }
+      // Prevent the error from bubbling up
+      event.preventDefault();
+    });
+
+    // Add an unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', function(event) {
+      // Only log errors that aren't related to Chrome extensions
+      if (!event.reason.message.includes('chrome-extension') && 
+          !event.reason.message.includes('Could not establish connection')) {
+        console.error('Unhandled promise rejection:', event.reason.message);
+      }
+      // Prevent the rejection from bubbling up
+      event.preventDefault();
+    });
+  </script>
+</body>
+</html>
