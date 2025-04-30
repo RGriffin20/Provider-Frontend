@@ -6,19 +6,19 @@
   <title>Medical Bill Navigator</title>
   <style>
   body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(...);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #333;
-  }
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/8ff33047-7b2b-4e9b-8c02-2ca6003ee587/MedCourse+Pro+Background+Image.jpg?format=500w');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
 
   /* Font settings */
   html, body {
@@ -37,20 +37,6 @@
   h3 {
     font-size: 20px;
   }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/8ff33047-7b2b-4e9b-8c02-2ca6003ee587/MedCourse+Pro+Background+Image.jpg?format=500w');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #333;
-    }
 
     .container {
       background-color: rgba(255, 255, 255, 0.9);
@@ -828,10 +814,11 @@
       URL.revokeObjectURL(url);
     }
 
-    // Function to handle resource dropdown
-    function openSelectedResource() {
-      const select = document.getElementById('resourceSelect');
-      const url = select.value;
-      if (url) {
-        window.open(url, '_blank');
-        select
+   function openSelectedResource() {
+  const select = document.getElementById('resourceSelect');
+  const url = select.value;
+  if (url) {
+    window.open(url, '_blank');
+    select.value = ""; // Reset select after opening
+  }
+}
