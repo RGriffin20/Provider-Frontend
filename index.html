@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,19 +6,19 @@
   <title>Medical Bill Navigator</title>
   <style>
   body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/8ff33047-7b2b-4e9b-8c02-2ca6003ee587/MedCourse+Pro+Background+Image.jpg?format=500w');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #333;
-}
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/8ff33047-7b2b-4e9b-8c02-2ca6003ee587/MedCourse+Pro+Background+Image.jpg?format=500w');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+  }
 
   /* Font settings */
   html, body {
@@ -756,25 +755,25 @@
 
         showTyping();
 
-try {
-  console.log("Sending request to backend...");
+        try {
+          console.log("Sending request to backend...");
 
-  const response = await fetch(`${BACKEND_URL}/chat`, {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({ messages: messageHistory }),
-  });
+          const response = await fetch(`${BACKEND_URL}/chat`, {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ messages: messageHistory }),
+          });
 
-  if (!response.ok) {
-    throw new Error(`Network response was not OK: ${response.status}`);
-  }
+          if (!response.ok) {
+            throw new Error(`Network response was not OK: ${response.status}`);
+          }
 
-  const data = await response.json();
-  console.log("✅ Response data:", data);
-          
+          const data = await response.json();
+          console.log("✅ Response data:", data);
+                  
           // Add a small delay for better UX
           await new Promise(resolve => setTimeout(resolve, 500));
           removeTyping();
@@ -829,9 +828,7 @@ try {
 
       // Add initial greeting
       setTimeout(() => {
-        addMessage("Navigator", "Welcome to the MedCourse Pro Provider Portal — your one-stop resource for navigating the complexities of medical billing, credentialing, and practice management. This AI-powered assistant is designed to help providers like you resolve claim denials, understand billing codes, and optimize your revenue cycle with step-by-step guidance and real-time payer policy searches.
-
-To get started, you can either type a question directly into the chat (for example: "Why was my 99214 denied?" or "How do I bill a Texas Health Steps well exam?) or click on one of the tool buttons on the side to launch a focused workflow. Each tool is tailored to a specific part of your business—from writing appeal letters and navigating credentialing, to analyzing your A/R and setting up billing systems. Whether you're troubleshooting a denial, setting up a new practice, or preparing a cost report, you're in the right place.", "bot");
+        addMessage("Navigator", "Welcome to the MedCourse Pro Provider Portal — your one-stop resource for navigating the complexities of medical billing, credentialing, and practice management. This AI-powered assistant is designed to help providers like you resolve claim denials, understand billing codes, and optimize your revenue cycle with step-by-step guidance and real-time payer policy searches.\n\nTo get started, you can either type a question directly into the chat (for example: \"Why was my 99214 denied?\" or \"How do I bill a Texas Health Steps well exam?) or click on one of the tool buttons on the side to launch a focused workflow. Each tool is tailored to a specific part of your business—from writing appeal letters and navigating credentialing, to analyzing your A/R and setting up billing systems. Whether you're troubleshooting a denial, setting up a new practice, or preparing a cost report, you're in the right place.", "bot");
       }, 500);
     });
 
@@ -885,9 +882,10 @@ To get started, you can either type a question directly into the chat (for examp
     // Add an unhandled promise rejection handler
     window.addEventListener('unhandledrejection', function(event) {
       // Only log errors that aren't related to Chrome extensions
-      if (!event.reason.message.includes('chrome-extension') && 
-          !event.reason.message.includes('Could not establish connection')) {
-        console.error('Unhandled promise rejection:', event.reason.message);
+      if (!event.reason || !event.reason.message || 
+          (!event.reason.message.includes('chrome-extension') && 
+           !event.reason.message.includes('Could not establish connection'))) {
+        console.error('Unhandled promise rejection:', event.reason ? event.reason.message : 'Unknown error');
       }
       // Prevent the rejection from bubbling up
       event.preventDefault();
