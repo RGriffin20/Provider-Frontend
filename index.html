@@ -38,6 +38,19 @@
     font-size: 20px;
   }
 
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
     .container {
       background-color: rgba(255, 255, 255, 0.9);
       border-radius: 20px;
@@ -150,21 +163,6 @@
       outline: none;
     }
 
-    /* Normalize fonts and appearance across buttons and links */
-.nav-button,
-.side-button,
-.resource-button,
-.nav-button:link,
-.nav-button:visited,
-.resource-button:link,
-.resource-button:visited {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  color: #333;
-}
-
     button.send-btn {
       padding: 0 20px;
       background-color: #4a90e2;
@@ -186,7 +184,11 @@
       gap: 15px;
     }
 
-    .side-button {
+    /* Base styles for all interactive elements */
+    .side-button,
+    .nav-button,
+    .resource-button,
+    .mobile-button {
       display: flex;
       align-items: center;
       padding: 16px;
@@ -196,53 +198,35 @@
       cursor: pointer;
       transition: all 0.2s;
       text-align: left;
-      font-size: 16px;
       font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 16px;
       text-decoration: none;
       color: #333;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      position: relative;
+      z-index: 100;
+      pointer-events: auto;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
       margin-bottom: 10px;
     }
 
-    .side-button:hover {
+    .side-button:hover,
+    .nav-button:hover,
+    .resource-button:hover,
+    .mobile-button:hover {
       background-color: #f5f8ff;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .side-button .icon {
-      margin-right: 15px;
-      font-size: 24px;
-      color: #4a90e2;
-      min-width: 30px;
-      text-align: center;
-    }
-
-    .nav-button {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      background-color: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      color: #333;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      margin-bottom: 10px;
-    }
-
-    .nav-button:hover {
-      background-color: #f5f8ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .nav-button .icon {
+    .side-button .icon,
+    .nav-button .icon,
+    .resource-button .icon,
+    .mobile-button .icon {
       margin-right: 15px;
       font-size: 24px;
       color: #4a90e2;
@@ -282,42 +266,57 @@
       display: none;
     }
 
-    .resource-button {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      background-color: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      color: #333;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      margin-bottom: 10px;
-    }
-
-    .resource-button:hover {
-      background-color: #f5f8ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .resource-button .icon {
-      margin-right: 15px;
-      font-size: 24px;
-      color: #4a90e2;
-      min-width: 30px;
-      text-align: center;
-    }
-
     /* Hide mobile buttons and dropdown by default */
     .mobile-buttons,
     .mobile-resource-dropdown {
       display: none;
+    }
+
+    /* Desktop specific button fixes */
+    @media (min-width: 769px) {
+      .side-buttons {
+        position: relative;
+        z-index: 10000;
+        pointer-events: auto;
+        min-width: 250px;
+        flex-shrink: 0;
+      }
+      
+      .side-buttons .nav-button,
+      .side-buttons .side-button {
+        background-color: white !important;
+        pointer-events: auto !important;
+        z-index: 10001 !important;
+        position: relative !important;
+        margin-bottom: 5px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .side-buttons .nav-button:hover,
+      .side-buttons .side-button:hover {
+        background-color: #f5f8ff !important;
+      }
+      
+      .main-content {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        align-items: flex-start;
+      }
+      
+      .chat-section {
+        position: relative;
+        z-index: 1;
+        max-width: calc(100% - 270px);
+      }
+      
+      .mobile-buttons {
+        display: none;
+      }
+      .side-buttons {
+        display: flex;
+      }
     }
 
     @media (max-width: 768px) {
@@ -375,22 +374,11 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        background-color: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      }
-
-      .mobile-button:hover {
-        background-color: #f5f8ff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       }
 
       .mobile-button .icon {
         margin-bottom: 5px;
+        margin-right: 0;
         font-size: 24px;
         color: #4a90e2;
       }
@@ -450,7 +438,7 @@
   <div class="container">
     <div class="header">
       <div class="logo">
-        <img src="https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/7445b1a7-1987-47c2-b3d3-dcbbafde5160/1000027079.png?format=1500w">
+        <img src="https://images.squarespace-cdn.com/content/v1/67cdc15c698e563f85384909/7445b1a7-1987-47c2-b3d3-dcbbafde5160/1000027079.png?format=1500w" alt="MedCourse PRO Logo">
         <div class="logo-text">MedCourse PRO</div>
       </div>
       <div class="title">MEDICAL BILL NAVIGATOR FOR PROVIDERS</div>
@@ -458,83 +446,83 @@
 
     <!-- Mobile-only buttons that appear at the top -->
     <div class="mobile-buttons">
-      <button class="mobile-button" id="mobileDownloadAppealBtn">
-        <div class="icon">📄</div>
+      <button class="mobile-button" id="mobileDownloadAppealBtn" type="button">
+        <div class="icon" aria-hidden="true">📄</div>
         Download Appeal
       </button>
-      <button class="mobile-button" id="mobileHelpUnderstandBtn">
-        <div class="icon">❓</div>
+      <button class="mobile-button" id="mobileHelpUnderstandBtn" type="button">
+        <div class="icon" aria-hidden="true">❓</div>
         Help Me Understand
       </button>
-      <button class="mobile-button" id="mobileStepByStepBtn">
-        <div class="icon">📋</div>
+      <button class="mobile-button" id="mobileStepByStepBtn" type="button">
+        <div class="icon" aria-hidden="true">📋</div>
         Step-by-Step Guide
       </button>
-      <button class="mobile-button" id="mobileDownloadChatBtn">
-        <div class="icon">⬇️</div>
+      <button class="mobile-button" id="mobileDownloadChatBtn" type="button">
+        <div class="icon" aria-hidden="true">⬇️</div>
         Download Chat
       </button>
     </div>
 
     <div class="main-content">
-      <div class="side-buttons">
-        <button class="nav-button" id="downloadAppealBtn">
-          <div class="icon">📄</div>
+      <div class="side-buttons" role="navigation" aria-label="Provider navigation and tools">
+        <button class="nav-button" id="downloadAppealBtn" type="button">
+          <div class="icon" aria-hidden="true">📄</div>
           Download Appeal
         </button>
-        <button class="nav-button" id="helpUnderstandBtn">
-          <div class="icon">❓</div>
+        <button class="nav-button" id="helpUnderstandBtn" type="button">
+          <div class="icon" aria-hidden="true">❓</div>
           Help Me Understand
         </button>
-        <button class="nav-button" id="stepByStepBtn">
-          <div class="icon">📋</div>
+        <button class="nav-button" id="stepByStepBtn" type="button">
+          <div class="icon" aria-hidden="true">📋</div>
           Use Step-by-Step Guide
         </button>
-        <button class="nav-button" id="downloadChatBtn">
-          <div class="icon">⬇️</div>
+        <button class="nav-button" id="downloadChatBtn" type="button">
+          <div class="icon" aria-hidden="true">⬇️</div>
           Download Chat
         </button>
         <!-- Resource buttons in side panel for desktop view -->
-                <a href="https://chatgpt.com/g/g-6808bc2c1224819197a70a4a7aa1c057-onboarding-for-billers-and-providers" target="_blank" class="nav-button">
-          <div class="icon">🔄</div>
+        <a href="https://chatgpt.com/g/g-6808bc2c1224819197a70a4a7aa1c057-onboarding-for-billers-and-providers" target="_blank" class="nav-button" aria-label="Onboarding for Billers and Providers, opens in new tab">
+          <div class="icon" aria-hidden="true">🔄</div>
           Onboarding
         </a>
-        <a href="https://medical-bill-navigator-patient-frontend.vercel.app/" target="_blank" class="nav-button">
-          <div class="icon">👨‍⚕️</div>
+        <a href="https://medical-bill-navigator-patient-frontend.vercel.app/" target="_blank" class="nav-button" aria-label="Patient Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">👨‍⚕️</div>
           Patient Navigator
         </a>
-        <a href="https://chatgpt.com/g/g-67f2a60724d08191b70e880823efab03-billing-setup-assistant" target="_blank" class="nav-button">
-          <div class="icon">⚙️</div>
+        <a href="https://chatgpt.com/g/g-67f2a60724d08191b70e880823efab03-billing-setup-assistant" target="_blank" class="nav-button" aria-label="Billing Setup Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">⚙️</div>
           Billing Setup Navigator
         </a>
-        <a href="https://chatgpt.com/g/g-678a55f17bb08191aea4ba7b05b7f703-medcourse-pro" target="_blank" class="nav-button">
-          <div class="icon">📚</div>
+        <a href="https://chatgpt.com/g/g-678a55f17bb08191aea4ba7b05b7f703-medcourse-pro" target="_blank" class="nav-button" aria-label="Medical Billing and Coding Course, opens in new tab">
+          <div class="icon" aria-hidden="true">📚</div>
           Medical Billing and Coding Course
         </a>
-        <a href="https://docs.google.com/document/d/1cvObIuhef9DWeyt4sIw-wCEJQJJvUhKK/edit?usp=sharing&ouid=106982096335761930162&rtpof=true&sd=true" target="_blank" class="nav-button">
-          <div class="icon">📝</div>
+        <a href="https://docs.google.com/document/d/1cvObIuhef9DWeyt4sIw-wCEJQJJvUhKK/edit?usp=sharing&ouid=106982096335761930162&rtpof=true&sd=true" target="_blank" class="nav-button" aria-label="Medical Billing Course Materials, opens in new tab">
+          <div class="icon" aria-hidden="true">📝</div>
           Medical Billing Course Materials
         </a>
-        <a href="https://chatgpt.com/g/g-67f6c9c2a74c819186fd952c28f8d61a-credentialing-navigator" target="_blank" class="nav-button">
-          <div class="icon">🔑</div>
+        <a href="https://chatgpt.com/g/g-67f6c9c2a74c819186fd952c28f8d61a-credentialing-navigator" target="_blank" class="nav-button" aria-label="Credentialing Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">🔑</div>
           Credentialing Navigator
         </a>
-        <a href="https://chatgpt.com/g/g-67e591dfc8448191960a2937f2a597d2-practice-analysis-ai-assistant" target="_blank" class="nav-button">
-          <div class="icon">📊</div>
+        <a href="https://chatgpt.com/g/g-67e591dfc8448191960a2937f2a597d2-practice-analysis-ai-assistant" target="_blank" class="nav-button" aria-label="Practice Analysis Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">📊</div>
           Practice Analysis Navigator
         </a>
-        <a href="https://chatgpt.com/g/g-67f6cfa62ec88191943446dcc3765414-patient-collections-navigator" target="_blank" class="nav-button">
-          <div class="icon">💰</div>
+        <a href="https://chatgpt.com/g/g-67f6cfa62ec88191943446dcc3765414-patient-collections-navigator" target="_blank" class="nav-button" aria-label="Patient Collections Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">💰</div>
           Patient Collections Navigator
         </a>
-        <a href="https://chatgpt.com/g/g-67f6cdeedcac81918a6bf1ccc1790cf3-cost-reporting-navigator" target="_blank" class="nav-button">
-          <div class="icon">📈</div>
+        <a href="https://chatgpt.com/g/g-67f6cdeedcac81918a6bf1ccc1790cf3-cost-reporting-navigator" target="_blank" class="nav-button" aria-label="Cost Reporting Navigator, opens in new tab">
+          <div class="icon" aria-hidden="true">📈</div>
           Cost Reporting Navigator
         </a>
       </div>
 
       <div class="chat-section">
-        <div id="chat">
+        <div id="chat" role="log" aria-live="polite" aria-label="Medical Bill Navigator Chat Conversation">
           <!-- Chat messages will appear here -->
           <div class="starter-buttons">
             <button id="btn1">Can you help me understand my medical bill?</button>
@@ -545,21 +533,22 @@
           </div>
         </div>
 
-        <div class="input-area">
-          <input type="text" id="userInput" placeholder="Send a message..." />
-          <button class="send-btn" id="sendBtn">Send</button>
+        <div class="input-area" role="search" aria-label="Send message to Medical Bill Navigator">
+          <input type="text" id="userInput" placeholder="Send a message..." aria-label="Type your message here" />
+          <button class="send-btn" id="sendBtn" aria-label="Send message">Send</button>
         </div>
 
         <div id="fileUpload">
           <label for="fileInput">Upload your EOB or bill (PDF, JPG, PNG):</label><br />
-          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" />
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" aria-describedby="file-help" />
+          <div id="file-help" class="sr-only">Upload medical bills or explanation of benefits documents in PDF, JPG, or PNG format</div>
           <div id="fileLabel"></div>
         </div>
 
         <!-- Mobile-only dropdown for resources -->
         <div class="mobile-resource-dropdown">
           <label for="resourceSelect" style="font-weight: bold;">📚 Resources</label>
-          <select id="resourceSelect" onchange="openSelectedResource()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;">
+          <select id="resourceSelect" onchange="openSelectedResource()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;" aria-label="Select a resource to open">
             <option value="">-- Select a Resource --</option>
             <option value="https://chatgpt.com/g/g-6808bc2c1224819197a70a4a7aa1c057-onboarding-for-billers-and-providers">🔄 Onboarding</option>
             <option value="https://medical-bill-navigator-patient-frontend.vercel.app/">👨‍⚕️ Patient Navigator</option>
@@ -621,6 +610,41 @@
       const fileInput = document.getElementById('fileInput');
       const fileLabel = document.getElementById('fileLabel');
       const downloadBtn = document.getElementById('downloadLetterBtn');
+
+      const messageHistory = [
+        {
+          role: 'system',
+          content: `You are the user's Medical Bill Navigator. Be clear, kind, and helpful. Speak at a 6th-grade reading level. Format responses with <h3> for headings, short <p> paragraphs, and bullet/numbered lists as needed.`
+        }
+      ];
+
+      // Force fix any overlay issues that might block buttons
+      function forceFixOverlays() {
+        // Lower z-index of potential blocking elements
+        const highZElements = Array.from(document.querySelectorAll('*')).filter(el => {
+          const style = window.getComputedStyle(el);
+          return parseInt(style.zIndex) > 5000;
+        });
+        
+        highZElements.forEach(el => {
+          if (!el.closest('.side-buttons') && !el.closest('.container')) {
+            el.style.zIndex = '1';
+          }
+        });
+        
+        // Boost our button container z-index
+        const sideButtons = document.querySelector('.side-buttons');
+        if (sideButtons) {
+          sideButtons.style.zIndex = '99999';
+          sideButtons.style.position = 'relative';
+        }
+      }
+
+      // Run the overlay fix immediately and after delay
+      forceFixOverlays();
+      setTimeout(forceFixOverlays, 2000);
+
+      // Get button references
       const downloadAppealBtn = document.getElementById('downloadAppealBtn');
       const helpUnderstandBtn = document.getElementById('helpUnderstandBtn');
       const stepByStepBtn = document.getElementById('stepByStepBtn');
@@ -632,13 +656,6 @@
       const mobileStepByStepBtn = document.getElementById('mobileStepByStepBtn');
       const mobileDownloadChatBtn = document.getElementById('mobileDownloadChatBtn');
 
-      const messageHistory = [
-        {
-          role: 'system',
-          content: `You are the user's Medical Bill Navigator. Be clear, kind, and helpful. Speak at a 6th-grade reading level. Format responses with <h3> for headings, short <p> paragraphs, and bullet/numbered lists as needed.`
-        }
-      ];
-
       // Ensure buttons exist before adding event listeners
       const btn1 = document.getElementById('btn1');
       if (btn1) {
@@ -649,52 +666,45 @@
       }
       
       document.getElementById('sendBtn').onclick = sendMessage;
-      
-      // Side buttons functionality for desktop
-      if (downloadAppealBtn) {
-        downloadAppealBtn.onclick = () => {
-          if (lastLetter) {
-            downloadLetter();
+
+      // Desktop side buttons functionality with single event binding
+      function setupButton(button, message) {
+        if (!button) return;
+        
+        // Force styles
+        button.style.pointerEvents = 'auto';
+        button.style.zIndex = '10001';
+        button.style.position = 'relative';
+        
+        // Use ONLY addEventListener - remove onclick to prevent duplicates
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (message === "DOWNLOAD") {
+            if (lastLetter) {
+              downloadLetter();
+            } else {
+              presetMessage("I need help writing an appeal letter.");
+            }
+          } else if (message === "CHAT") {
+            downloadChat();
           } else {
-            presetMessage("I need help writing an appeal letter");
+            presetMessage(message);
           }
-        };
+        });
       }
-      
-      if (helpUnderstandBtn) {
-        helpUnderstandBtn.onclick = () => presetMessage("Help me understand my claim.");
-      }
-      
-      if (stepByStepBtn) {
-        stepByStepBtn.onclick = () => presetMessage("Use the step-by-step guide to help you.");
-      }
-      
-      if (downloadChatBtn) {
-        downloadChatBtn.onclick = downloadChat;
-      }
-      
-      // Mobile buttons functionality
-      if (mobileDownloadAppealBtn) {
-        mobileDownloadAppealBtn.onclick = () => {
-          if (lastLetter) {
-            downloadLetter();
-          } else {
-            presetMessage("I need help writing an appeal letter");
-          }
-        };
-      }
-      
-      if (mobileHelpUnderstandBtn) {
-        mobileHelpUnderstandBtn.onclick = () => presetMessage("Help me understand my claim");
-      }
-      
-      if (mobileStepByStepBtn) {
-        mobileStepByStepBtn.onclick = () => presetMessage("Use the step-by-step guide to help you");
-      }
-      
-      if (mobileDownloadChatBtn) {
-        mobileDownloadChatBtn.onclick = downloadChat;
-      }
+
+      // Setup all desktop buttons
+      setupButton(downloadAppealBtn, "DOWNLOAD");
+      setupButton(helpUnderstandBtn, "Help me understand my claim.");
+      setupButton(stepByStepBtn, "Use the step-by-step guide to help you.");
+      setupButton(downloadChatBtn, "CHAT");
+
+      // Setup mobile buttons
+      setupButton(mobileDownloadAppealBtn, "DOWNLOAD");
+      setupButton(mobileHelpUnderstandBtn, "Help me understand my claim.");
+      setupButton(mobileStepByStepBtn, "Use the step-by-step guide to help you.");
+      setupButton(mobileDownloadChatBtn, "CHAT");
 
       // Add Enter key press functionality for better UX
       input.addEventListener('keypress', function(e) {
@@ -798,127 +808,4 @@
                   
           // Add a small delay for better UX
           await new Promise(resolve => setTimeout(resolve, 500));
-          removeTyping();
-          vibrateIfActive();
-
-          messageHistory.push({ role: "assistant", content: data.reply });
-          addMessage("Navigator", data.reply, "bot");
-
-          if (data.offerDownload) {
-            console.log("Download letter available");
-            lastLetter = data.reply;
-            const downloadBtn = document.getElementById('downloadLetterBtn');
-            if (downloadBtn) {
-              downloadBtn.style.display = "inline-block";
-            }
-          }
-        } catch (error) {
-          console.error("Error in sendMessage:", error);
-          removeTyping();
-          addMessage("Error", "Sorry, there was a problem connecting to the Navigator service. Please try again later. Error: " + error.message, "bot");
-        }
-
-        chat.scrollTop = chat.scrollHeight;
-      }
-
-      function addMessage(sender, text, type) {
-        const messageContainer = document.createElement("div");
-        messageContainer.className = "message-container";
-        
-        const msg = document.createElement("div");
-        msg.className = `message ${type}`;
-        
-        // Don't show "Navigator:" for bot messages to match the design
-        const senderText = type === "bot" ? "" : `<strong>${sender}:</strong><br>`;
-        msg.innerHTML = `${senderText}${formatMarkdown(text)}`;
-        
-        messageContainer.appendChild(msg);
-        chat.appendChild(messageContainer);
-        chat.scrollTop = chat.scrollHeight;
-      }
-
-      function formatMarkdown(text) {
-        return text
-          .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-          .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-          .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-          .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
-          .replace(/\*(.*?)\*/gim, "<em>$1</em>")
-          .replace(/^- (.*$)/gim, "<ul><li>$1</li></ul>")
-          .replace(/\n/g, "<br>");
-      }
-
-// Add initial greeting based on screen width
-setTimeout(() => {
-  const isMobile = window.innerWidth <= 768;
-
-  const greeting = isMobile
-    ? "Welcome to the Medical Bill Navigator for Providers. Ask a billing question or choose a tool below to get started!"
-    : "Welcome to the Medical Bill Navigator for Providers — your one-stop resource for navigating the complexities of medical billing, credentialing, and practice management. This AI-powered assistant is designed to help providers like you resolve claim denials, understand billing codes, and optimize your revenue cycle with step-by-step guidance and real-time payer policy searches.\n\nTo get started, you can either type a question directly into the chat (for example: \"Why was my 99214 denied?\" or \"How do I bill a Texas Health Steps well exam?\") or click on one of the tool buttons on the side to launch a focused workflow. Each tool is tailored to a specific part of your business—from writing appeal letters and navigating credentialing, to analyzing your A/R and setting up billing systems. Whether you're troubleshooting a denial, setting up a new practice, or preparing a cost report, you're in the right place.";
-
-  addMessage("Navigator", greeting, "bot");
-}, 500);
-    });
-
-    function downloadChat() {
-      console.log("Downloading chat...");
-      const messages = document.querySelectorAll(".message");
-      let chatContent = "Medical Bill Navigator Chat\n\n";
-
-      messages.forEach((msg) => {
-        const text = msg.innerText || msg.textContent;
-        chatContent += text + "\n\n";
-      });
-
-      try {
-        const blob = new Blob([chatContent], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "medical-bill-chat.txt";
-        document.body.appendChild(link); // Append to document to ensure compatibility
-        link.click();
-        URL.revokeObjectURL(url);
-        document.body.removeChild(link); // Clean up
-        console.log("Chat download complete");
-      } catch (error) {
-        console.error("Error downloading chat:", error);
-        alert("Could not download chat: " + error.message);
-      }
-    }
-    
-    function openSelectedResource() {
-      const select = document.getElementById('resourceSelect');
-      const url = select.value;
-      if (url) {
-        window.open(url, '_blank');
-        select.value = ""; // Reset select after opening
-      }
-    }
-
-    // Handle errors from Chrome extensions by adding a global error handler
-    window.addEventListener('error', function(event) {
-      // Only log errors that aren't related to Chrome extensions
-      if (!event.message.includes('chrome-extension') && 
-          !event.message.includes('Could not establish connection')) {
-        console.error('Caught error:', event.message);
-      }
-      // Prevent the error from bubbling up
-      event.preventDefault();
-    });
-
-    // Add an unhandled promise rejection handler
-    window.addEventListener('unhandledrejection', function(event) {
-      // Only log errors that aren't related to Chrome extensions
-      if (!event.reason || !event.reason.message || 
-          (!event.reason.message.includes('chrome-extension') && 
-           !event.reason.message.includes('Could not establish connection'))) {
-        console.error('Unhandled promise rejection:', event.reason ? event.reason.message : 'Unknown error');
-      }
-      // Prevent the rejection from bubbling up
-      event.preventDefault();
-    });
-  </script>
-<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
-</body>
-</html>
+          remove
