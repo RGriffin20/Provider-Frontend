@@ -683,6 +683,7 @@
   <script>
     let typingInterval;
     let lastLetter = "";
+    let uploadedFile = null; // Store the uploaded file
     // Base URL for the backend - update this value if your backend URL changes
     const BACKEND_URL = "https://provider-backend.vercel.app/api/provider";
 
@@ -734,6 +735,20 @@
       if (document.hasFocus() && "vibrate" in navigator) {
         navigator.vibrate(100);
       }
+    }
+
+    // Convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
+          const base64 = reader.result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -832,12 +847,34 @@
         }
       });
 
-      fileInput.addEventListener('change', () => {
-        const file = fileInput.files[0];
-        fileLabel.textContent = file ? `Uploaded: ${file.name}` : '';
-        if (file) {
+      // CORRECTED FILE UPLOAD HANDLER
+      fileInput.addEventListener('change', async function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        console.log("File selected:", file.name, file.type);
+        
+        try {
+          // Store the uploaded file for sending with messages
+          uploadedFile = {
+            name: file.name,
+            type: file.type,
+            base64: await fileToBase64(file)
+          };
+          
+          fileLabel.textContent = `Uploaded: ${file.name}`;
           addMessage("You", `Uploaded file: ${file.name}`, "user");
           announceToScreenReader(`File uploaded: ${file.name}`);
+          
+          // Automatically send a message about the file upload
+          const fileMessage = `I've uploaded a file: ${file.name}. Please analyze this document and help me understand it.`;
+          input.value = fileMessage;
+          sendMessage();
+          
+        } catch (error) {
+          console.error("Error processing file:", error);
+          fileLabel.textContent = "Error uploading file";
+          announceToScreenReader("Error uploading file");
         }
       });
 
@@ -915,13 +952,26 @@
         try {
           console.log("Sending request to backend...");
 
+          // Prepare the request body
+          const requestBody = {
+            messages: messageHistory
+          };
+
+          // If there's an uploaded file, include it in the request
+          if (uploadedFile) {
+            requestBody.fileBuffer = uploadedFile.base64;
+            requestBody.fileType = uploadedFile.type.split('/')[1]; // e.g., 'pdf', 'jpeg'
+            requestBody.fileName = uploadedFile.name;
+            console.log("Including file in request:", uploadedFile.name);
+          }
+
           const response = await fetch(`${BACKEND_URL}/chat`, {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
               "Accept": "application/json"
             },
-            body: JSON.stringify({ messages: messageHistory }),
+            body: JSON.stringify(requestBody),
           });
 
           if (!response.ok) {
@@ -939,6 +989,12 @@
           messageHistory.push({ role: "assistant", content: data.reply });
           addMessage("Navigator", data.reply, "bot");
           announceToScreenReader("Navigator has responded");
+
+          // Clear the uploaded file after sending (so it doesn't get sent again)
+          if (uploadedFile) {
+            console.log("Clearing uploaded file after processing");
+            uploadedFile = null;
+          }
 
           if (data.offerDownload) {
             console.log("Download letter available");
